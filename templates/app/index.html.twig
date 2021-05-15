@@ -3,11 +3,13 @@
 {% block title %}Mon application React{% endblock %}
 
 {% block stylesheets %}
+    <link rel="stylesheet" href="https://bootswatch.com/5/flatly/bootstrap.min.css">
     {{encore_entry_link_tags('app')}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 {% endblock %}
 
 {% block body %}
-    <h1>Page d'accueil ! ✅</h1>
+    <div id="app"></div>
 {% endblock %}
 
 {% block javascripts %}

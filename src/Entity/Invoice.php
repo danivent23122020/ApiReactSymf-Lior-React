@@ -30,7 +30,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
  *          "description"="Incrémente le chrono d'une facture donnée"
  *      }}},
  *  attributes={
- *      "pagination_enabled"=true,
+ *      "pagination_enabled"=false,
  *      "pagination_items_per_page"= 20
  *      },
  *  normalizationContext={

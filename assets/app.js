@@ -19,6 +19,7 @@ import LoginPage from "./js/pages/LoginPage";
 import authAPI from "./js/services/authAPI";
 import AuthContext from "./js/contexts/AuthContext";
 import PrivateRoute from "./js/components/PrivateRoute";
+import CustomerPage from "./js/pages/CustomerPage";
 
 authAPI.setup();
 
@@ -44,6 +45,7 @@ const App = () => {
           <Switch>
             <Route path="/login" component={LoginPage} />
             <PrivateRoute path="/invoices" component={InvoicesPage} />
+            <PrivateRoute path="/customers/:id" component={CustomerPage} />
             <PrivateRoute path="/customers" component={CustomersPage} />
             <Route path="/" component={HomePage} />
           </Switch>

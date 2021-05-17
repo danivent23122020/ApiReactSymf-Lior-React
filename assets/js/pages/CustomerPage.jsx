@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Field from "../components/forms/Field";
-import axios from "axios";
+import CustomersAPI from "../services/customersAPI";
 
-const CustomerPage = props => {
-  const { id = "new" } = props.match.params;
+const CustomerPage = ({ match, history }) => {
+  const { id = "new" } = match.params;
   if (id !== "new") {
     console.log(id);
   }
@@ -26,23 +26,26 @@ const CustomerPage = props => {
   // détection création ou modification customer
   const [editing, setEditing] = useState(false);
 
+  // Récupération du customer en fonction de l'id
   const fetchCustomer = async id => {
     try {
-      const data = await axios
-        .get("https://localhost:8000/api/customers/" + id)
-        .then(response => response.data);
-      const { firstName, lastName, email, company } = data;
+      const { firstName, lastName, email, company } = await CustomersAPI.find(
+        id
+      );
       setCustomer({ firstName, lastName, email, company });
     } catch (error) {
-      console.log(error.response);
+      // console.log(error.response);
+      // history.replace("/customers");
     }
   };
 
+  // Chargement du customer si besoin au chargement du composant ou au changement de l'id
   useEffect(() => {
     if (id !== "new") setEditing(true);
     fetchCustomer(id);
   }, [id]);
 
+  // Gestion des changements des input dans le formulaire
   const handleChange = ({ currentTarget }) => {
     const { name, value } = currentTarget;
     setCustomer({ ...customer, [name]: value });
@@ -53,24 +56,20 @@ const CustomerPage = props => {
     event.preventDefault();
     try {
       if (editing) {
-        const response = await axios.put(
-          "https://localhost:8000/api/customers/" + id,
-          customer
-        );
+        await CustomersAPI.update(id, customer);
         console.log(response.data);
       } else {
-        const response = await axios.post(
-          "https://localhost:8000/api/customers",
-          customer
-        );
-        props.history.replace("/customers");
+        await CustomersAPI.create(customer);
+        history.replace("/customers");
       }
       setErrors({});
-    } catch (error) {
-      if (error.response.data.violations) {
+    } catch ({ response }) {
+      const { violations } = response.data;
+
+      if (violations) {
         const apiErrors = {};
-        error.response.data.violations.forEach(violation => {
-          apiErrors[violation.propertyPath] = violation.message;
+        violations.forEach(({ propertyPath, message }) => {
+          apiErrors[propertyPath] = message;
         });
         setErrors(apiErrors);
       }

@@ -1,11 +1,4 @@
-/*
- * Welcome to your app's main JavaScript file!
- *
- * We recommend including the built version of this JavaScript file
- * (and its CSS file) in your base layout (base.html.twig).
- */
-// les imports importants
-import React from "react";
+import React, { useState, useContext } from "react";
 import ReactDom from "react-dom";
 // any CSS you import will output into a single css file (app.css in this case)
 import "./styles/app.css";
@@ -13,23 +6,50 @@ import "./styles/app.css";
 import "./bootstrap";
 import Navbar from "./js/components/Navbar";
 import HomePage from "./js/pages/HomePage";
-import { HashRouter, Switch, Route } from "react-router-dom";
+import {
+  HashRouter,
+  Switch,
+  Route,
+  withRouter,
+  Redirect,
+} from "react-router-dom";
 import CustomersPage from "./js/pages/CustomersPage";
 import InvoicesPage from "./js/pages/InvoicesPage";
+import LoginPage from "./js/pages/LoginPage";
+import authAPI from "./js/services/authAPI";
+import AuthContext from "./js/contexts/AuthContext";
+import PrivateRoute from "./js/components/PrivateRoute";
 
-console.log("hello world !!!");
+authAPI.setup();
+
 const App = () => {
+  //
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    authAPI.isAuthenticated()
+  );
+  //
+  const NavbarWithRouter = withRouter(Navbar);
+  //
+  const contextValue = {
+    isAuthenticated,
+    setIsAuthenticated,
+  };
+  //
   return (
-    <HashRouter>
-      <Navbar />
-      <main className="container pt-5">
-        <Switch>
-          <Route path="/invoices" component={InvoicesPage} />
-          <Route path="/customers" component={CustomersPage} />
-          <Route path="/" component={HomePage} />
-        </Switch>
-      </main>
-    </HashRouter>
+    <AuthContext.Provider value={contextValue}>
+      <HashRouter>
+        <NavbarWithRouter />
+
+        <main className="container pt-5">
+          <Switch>
+            <Route path="/login" component={LoginPage} />
+            <PrivateRoute path="/invoices" component={InvoicesPage} />
+            <PrivateRoute path="/customers" component={CustomersPage} />
+            <Route path="/" component={HomePage} />
+          </Switch>
+        </main>
+      </HashRouter>
+    </AuthContext.Provider>
   );
 };
 

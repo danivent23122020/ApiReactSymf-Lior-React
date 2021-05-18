@@ -62,7 +62,7 @@ const LoginPage = ({ history }) => {
             error=""
             placeholder="Votre mot de passe"
           />
-          <div className="form-group">
+          <div className="form-group d-flex justify-content-center">
             <button type="submit" className="btn btn-success mt-2">
               Je me connecte
             </button>

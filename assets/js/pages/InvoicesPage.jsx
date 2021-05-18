@@ -1,5 +1,6 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Pagination from "../components/Pagination";
 import InvoicesApi from "../services/invoicesAPI";
 
@@ -85,7 +86,12 @@ const InvoicesPage = props => {
 
   return (
     <>
-      <h1>Liste des Factures</h1>
+      <div className="d-flex justify-content-around align-items-center">
+        <h1>Liste des Factures</h1>
+        <Link className="btn btn-primary" to="/invoices/new">
+          Créer une facture
+        </Link>
+      </div>
 
       <div className="form-group">
         <input
@@ -130,13 +136,7 @@ const InvoicesPage = props => {
                 {invoice.amount.toLocaleString()} €
               </td>
               <td>
-                <button
-                  // onClick={() => handleDelete(customer.id)}
-                  // disabled={customer.invoices.length > 0}
-                  className="btn btn-md btn-info"
-                >
-                  Editer
-                </button>
+                <Link to={"/invoices/" + invoice.id} className="btn btn-md btn-info">Editer</Link>
                 <button
                   className="btn btn-md btn-danger"
                   onClick={() => handleDelete(invoice.id)}
@@ -149,6 +149,7 @@ const InvoicesPage = props => {
           ))}
         </tbody>
       </table>
+
       <Pagination
         currentPage={currentPage}
         itemsPerPage={itemsPerPage}

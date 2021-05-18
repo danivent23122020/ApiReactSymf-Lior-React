@@ -1,6 +1,8 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import TableLoader from "../components/loaders/TableLoader";
 import Pagination from "../components/Pagination";
 import InvoicesApi from "../services/invoicesAPI";
 
@@ -24,6 +26,8 @@ const InvoicesPage = props => {
   const [currentPage, setCurrentPage] = useState(1);
   //
   const [search, setSearch] = useState("");
+  //
+  const [loading, setLoading] = useState(true);
   // items par page
   const itemsPerPage = 10;
 
@@ -32,8 +36,9 @@ const InvoicesPage = props => {
     try {
       const data = await InvoicesApi.findAll();
       setInvoices(data);
+      setLoading(false);
     } catch (error) {
-      console.log(error.response);
+      toast.error("Erreur lors du chargement des factures !");
     }
   };
 
@@ -59,8 +64,9 @@ const InvoicesPage = props => {
 
     try {
       await InvoicesApi.delete(id);
+      toast.success("La facture a bien été supprimée !");
     } catch (error) {
-      console.log(error.response);
+      toast.error("Une erreur est survenue !");
       setInvoices(originalInvoices);
     }
   };
@@ -114,41 +120,52 @@ const InvoicesPage = props => {
             <th></th>
           </tr>
         </thead>
-        <tbody>
-          {/* boucle des invoices */}
-          {paginatedInvoices.map(invoice => (
-            <tr key={invoice.id}>
-              <td>{invoice.chrono}</td>
-              <td>
-                {invoice.customer.firstName} {invoice.customer.lastName}
-              </td>
-              <td className="text-center">{formatDate(invoice.sentAt)}</td>
-              <td className="text-center">
-                <span
-                  className={
-                    "badge rounded-pill bg-" + STATUS_CLASSES[invoice.status]
-                  }
-                >
-                  {STATUS_LABELS[invoice.status]}
-                </span>
-              </td>
-              <td className="text-center">
-                {invoice.amount.toLocaleString()} €
-              </td>
-              <td>
-                <Link to={"/invoices/" + invoice.id} className="btn btn-md btn-info">Editer</Link>
-                <button
-                  className="btn btn-md btn-danger"
-                  onClick={() => handleDelete(invoice.id)}
-                  // disabled={customer.invoices.length > 0}
-                >
-                  <i className="fas fa-trash"></i>
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+        {!loading && (
+          <tbody>
+            {/* boucle des invoices */}
+            {paginatedInvoices.map(invoice => (
+              <tr key={invoice.id}>
+                <td>{invoice.chrono}</td>
+                <td>
+                  <Link to={"/customers/" + invoice.customer.id}>
+                    {invoice.customer.firstName} {invoice.customer.lastName}
+                  </Link>
+                </td>
+                <td className="text-center">{formatDate(invoice.sentAt)}</td>
+                <td className="text-center">
+                  <span
+                    className={
+                      "badge rounded-pill bg-" + STATUS_CLASSES[invoice.status]
+                    }
+                  >
+                    {STATUS_LABELS[invoice.status]}
+                  </span>
+                </td>
+                <td className="text-center">
+                  {invoice.amount.toLocaleString()} €
+                </td>
+                <td>
+                  <Link
+                    to={"/invoices/" + invoice.id}
+                    className="btn btn-md btn-info"
+                  >
+                    Editer
+                  </Link>
+                  <button
+                    className="btn btn-md btn-danger"
+                    onClick={() => handleDelete(invoice.id)}
+                    // disabled={customer.invoices.length > 0}
+                  >
+                    <i className="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
+
+      {loading && <TableLoader />}
 
       <Pagination
         currentPage={currentPage}

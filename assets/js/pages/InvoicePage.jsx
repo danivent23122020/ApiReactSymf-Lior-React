@@ -1,6 +1,7 @@
 import Axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import Field from "../components/forms/Field";
 import Select from "../components/forms/Select";
 import CustomersAPI from "../services/customersAPI";
@@ -24,7 +25,7 @@ const InvoicePage = ({ history, match }) => {
     status: "",
   });
 
-  // Récupérations des customers
+  // Récupérations des customers/customers
   const fetchCustomers = async () => {
     try {
       const data = await CustomersAPI.findAll();
@@ -33,10 +34,11 @@ const InvoicePage = ({ history, match }) => {
         setInvoice({ ...invoice, customer: data[0].id });
       }
     } catch (error) {
-      console.log(error.response);
+      toast.error("Impossible de charger les clients !");
+      history.replace("/invoices");
     }
   };
-  //
+  // Récupération d'une facture
   const fetchInvoice = async id => {
     try {
       const data = await Axios.get(
@@ -47,7 +49,8 @@ const InvoicePage = ({ history, match }) => {
 
       setInvoice({ amount, status, customer: customer.id });
     } catch (error) {
-      console.log(error.response);
+      toast.error("Impossible de charger la facture demandée !");
+      history.replace("/invoices");
     }
   };
   // les useEffect
@@ -67,23 +70,23 @@ const InvoicePage = ({ history, match }) => {
     setInvoice({ ...invoice, [name]: value });
   };
   //
+  // Gestion de la soumission des modifications du formulaire
   const handleSubmit = async event => {
     event.preventDefault();
     try {
       if (editing) {
-        const response = await Axios.put(
-          "https://localhost:8000/api/invoices/" + id,
-          { ...invoice, customer: `/api/customers/${invoice.customer}` }
-        );
-        console.log(response);
+        await Axios.put("https://localhost:8000/api/invoices/" + id, {
+          ...invoice,
+          customer: `/api/customers/${invoice.customer}`,
+        });
+        toast.success("La facture a bien été modifiée !");
+        history.replace("/invoices");
       } else {
-        const response = await Axios.post(
-          "https://localhost:8000/api/invoices",
-          {
-            ...invoice,
-            customer: `/api/customers/${invoice.customer}`,
-          }
-        );
+        await Axios.post("https://localhost:8000/api/invoices", {
+          ...invoice,
+          customer: `/api/customers/${invoice.customer}`,
+        });
+        toast.success("La facture a bien été créée !");
         history.replace("/invoices");
       }
     } catch ({ response }) {
@@ -95,6 +98,7 @@ const InvoicePage = ({ history, match }) => {
           apiErrors[propertyPath] = message;
         });
         setErrors(apiErrors);
+        toast.error("Attention : compléter tous les champs du formulaire !");
       }
     }
   };

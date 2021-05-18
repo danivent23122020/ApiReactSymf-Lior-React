@@ -1,6 +1,7 @@
 import Axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import Field from "../components/forms/Field";
 import usersAPI from "../services/usersAPI";
 
@@ -31,17 +32,22 @@ const RegisterPage = ({ history }) => {
   const handleSubmit = async event => {
     event.preventDefault();
 
+    // Comparaison des mots de passe
     const apiErrors = {};
     if (user.password !== user.passwordConfirm) {
       apiErrors.passwordConfirm =
         "Attention, vos mots de passe ne correspondent pas !";
       setErrors(apiErrors);
+      toast.error("Attention, vos mots de passe ne correspondent pas !");
       return;
     }
 
     try {
       await usersAPI.register(user);
       setErrors({});
+      toast.success(
+        "Vous êtes désormais inscrit, vous pous pouvez vous connecter !"
+      );
       history.replace("/login");
     } catch (error) {
       console.log(error.response);
@@ -52,6 +58,7 @@ const RegisterPage = ({ history }) => {
         });
         setErrors(apiErrors);
       }
+      toast.error("Il y a des erreurs dans votre formulaire !");
     }
   };
 

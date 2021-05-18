@@ -65,7 +65,9 @@ const CustomersPage = props => {
     <>
       <div className="mb-3 d-flex justify-content-around align-items-center">
         <h1>Liste des clients</h1>
-        <Link to="/customers/new" className="btn btn-primary">Créer un client</Link>
+        <Link to="/customers/new" className="btn btn-primary">
+          Créer un client
+        </Link>
       </div>
       <div className="form-group">
         <input

@@ -58,7 +58,7 @@ const RegisterPage = ({ history }) => {
         });
         setErrors(apiErrors);
       }
-      toast.error("Il y a des erreurs dans votre formulaire !");
+      toast.error("Veuillez remplir tous les champs du formulaire !");
     }
   };
 
@@ -111,7 +111,7 @@ const RegisterPage = ({ history }) => {
             value={user.passwordConfirm}
             onChange={handleChange}
           />
-          <div className="form-group d-flex justify-content-center mt-2">
+          <div className="form-group d-flex justify-content-around mt-2">
             <button type="submit" className="btn btn-success">
               Inscription
             </button>

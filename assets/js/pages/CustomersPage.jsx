@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import Pagination from "../components/Pagination";
 import CustomersAPI from "../services/customersAPI";
 
@@ -14,18 +15,21 @@ const CustomersPage = props => {
       const data = await CustomersAPI.findAll();
       setCustomers(data);
     } catch (error) {
-      console.log(error.response);
+      toast.error("Impossible de charger les clients !");
     }
   };
   // Récupération des customers au chargement du composant
-  useEffect(() => fetchCustomer(), []);
+  useEffect(() => {
+    fetchCustomer();
+  }, []);
 
-  // Gestion de la suppression d'un customer
+  // Gestion de la suppression d'un client
   const handleDelete = async id => {
     const originalCustomers = [...customers];
     setCustomers(customers.filter(customer => customer.id !== id));
     try {
       await CustomersAPI.delete(id);
+      toast.success("Le client a bien été supprimé !");
     } catch (error) {
       setCustomers(originalCustomers);
       console.log(error.response);
@@ -33,18 +37,20 @@ const CustomersPage = props => {
   };
 
   // gestion du changement de page
-  const handlePageChange = page => setCurrentPage(page);
+  const handlePageChange = page => {
+    setCurrentPage(page);
+  };
 
-  // gestion de la recherche (input)
+  // gestion de la recherche
   const handleSearch = ({ currentTarget }) => {
     setSearch(currentTarget.value);
     setCurrentPage(1);
   };
 
-  // gestion de la pagination
+  // Déclaration des items par page
   const itemsPerPage = 10;
 
-  // Filtrage des customer en fonction de la recherche
+  // Filtrage des customers en fonction de la recherche
   const filteredCustomers = customers.filter(
     c =>
       c.firstName.toLowerCase().includes(search.toLowerCase()) ||

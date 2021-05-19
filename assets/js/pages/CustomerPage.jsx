@@ -35,7 +35,7 @@ const CustomerPage = ({ match, history }) => {
       );
       setCustomer({ firstName, lastName, email, company });
     } catch (error) {
-      toast.error("Le client n'a pu être chargé !");
+      // toast.error("Le client n'a pu être chargé !");
       // history.replace("/customers");
     }
   };
@@ -83,7 +83,7 @@ const CustomerPage = ({ match, history }) => {
     <>
       <div className="col-6">
         {(!editing && <h1>Création d'un client</h1>) || (
-          <h1>Modification d'un client</h1>
+          <h1>Modifier un client</h1>
         )}
         <form onSubmit={handleSubmit}>
           <Field
@@ -120,7 +120,7 @@ const CustomerPage = ({ match, history }) => {
             onChange={handleChange}
             error={errors.company}
           />
-          <div className="form-group mt-2">
+          <div className="form-group d-flex justify-content-around mt-2">
             <button className="btn btn-md btn-success">Enregistrer</button>
             <Link to="/customers" className="btn btn-link">
               Retour à la liste

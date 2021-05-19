@@ -3,6 +3,7 @@ import AuthAPI from "../services/authAPI";
 import AuthContext from "../contexts/AuthContext";
 import Field from "../components/forms/Field";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const LoginPage = ({ history }) => {
   //
@@ -35,7 +36,7 @@ const LoginPage = ({ history }) => {
       //
     } catch (error) {
       setError("Aucun compte ne possède cette adresse email ou mot de passe !");
-      toast.error("Une erreur est survenue !");
+      toast.error("Vérifiez votre email ou mot de passe");
     }
   };
   //
@@ -65,10 +66,13 @@ const LoginPage = ({ history }) => {
             error=""
             placeholder="Votre mot de passe"
           />
-          <div className="form-group d-flex justify-content-center">
-            <button type="submit" className="btn btn-success mt-2">
+          <div className="form-group d-flex justify-content-around mt-2">
+            <button type="submit" className="btn btn-success">
               Je me connecte
             </button>
+            <Link to="/register" className="btn btn-link">
+              Je n'ai pas encore de compte
+            </Link>
           </div>
         </form>
       </div>

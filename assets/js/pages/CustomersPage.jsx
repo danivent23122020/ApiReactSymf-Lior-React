@@ -8,44 +8,43 @@ const CustomersPage = props => {
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    CustomersAPI.findAll()
-      .then(data => setCustomers(data))
-      .catch(error => console.log(error.response));
-  }, []);
+  // Permet de récupérer les customers
+  const fetchCustomer = async () => {
+    try {
+      const data = await CustomersAPI.findAll();
+      setCustomers(data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+  // Récupération des customers au chargement du composant
+  useEffect(() => fetchCustomer(), []);
 
-  // suppression customer
-  const handleDelete = id => {
+  // Gestion de la suppression d'un customer
+  const handleDelete = async id => {
     const originalCustomers = [...customers];
-
-    // approche optimiste
     setCustomers(customers.filter(customer => customer.id !== id));
-
-    // approche pessimiste
-    CustomersAPI.delete(id)
-      .then(response => console.log("ok"))
-      .catch(error => {
-        setCustomers(originalCustomers);
-        console.log(error.response);
-      });
+    try {
+      await CustomersAPI.delete(id);
+    } catch (error) {
+      setCustomers(originalCustomers);
+      console.log(error.response);
+    }
   };
 
-  // gestion de la page active
-  const handlePageChange = page => {
-    setCurrentPage(page);
-  };
+  // gestion du changement de page
+  const handlePageChange = page => setCurrentPage(page);
 
-  // gestion de l'input search
-  const handleSearch = event => {
-    const value = event.currentTarget.value;
-    setSearch(value);
+  // gestion de la recherche (input)
+  const handleSearch = ({ currentTarget }) => {
+    setSearch(currentTarget.value);
     setCurrentPage(1);
   };
 
   // gestion de la pagination
   const itemsPerPage = 10;
 
-  // gestion des items recherchés
+  // Filtrage des customer en fonction de la recherche
   const filteredCustomers = customers.filter(
     c =>
       c.firstName.toLowerCase().includes(search.toLowerCase()) ||
@@ -54,6 +53,7 @@ const CustomersPage = props => {
       (c.company && c.company.toLowerCase().includes(search.toLowerCase()))
   );
 
+  // Pagination des données
   const paginatedCustomers = Pagination.getData(
     filteredCustomers,
     currentPage,

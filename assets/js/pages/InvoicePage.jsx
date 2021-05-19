@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import Field from "../components/forms/Field";
 import Select from "../components/forms/Select";
 import CustomersAPI from "../services/customersAPI";
+import invoicesAPI from "../services/invoicesAPI";
 
 const InvoicePage = ({ history, match }) => {
   const { id = "new" } = match.params;
@@ -25,7 +26,7 @@ const InvoicePage = ({ history, match }) => {
     status: "",
   });
 
-  // Récupérations des customers/customers
+  // Récupérations des customers/clients
   const fetchCustomers = async () => {
     try {
       const data = await CustomersAPI.findAll();
@@ -41,11 +42,7 @@ const InvoicePage = ({ history, match }) => {
   // Récupération d'une facture
   const fetchInvoice = async id => {
     try {
-      const data = await Axios.get(
-        "https://localhost:8000/api/invoices/" + id
-      ).then(response => response.data);
-
-      const { amount, status, customer } = data;
+      const { amount, status, customer } = await invoicesAPI.find(id);
 
       setInvoice({ amount, status, customer: customer.id });
     } catch (error) {
@@ -53,11 +50,11 @@ const InvoicePage = ({ history, match }) => {
       history.replace("/invoices");
     }
   };
-  // les useEffect
+  // Récupération de la liste des clients à ,chaque chargement du composant
   useEffect(() => {
     fetchCustomers();
   }, []);
-  //
+  // Récupération de la bonne facture quand l'identifiant de l'URL change
   useEffect(() => {
     if (id !== "new") {
       setEditing(true);
@@ -75,17 +72,11 @@ const InvoicePage = ({ history, match }) => {
     event.preventDefault();
     try {
       if (editing) {
-        await Axios.put("https://localhost:8000/api/invoices/" + id, {
-          ...invoice,
-          customer: `/api/customers/${invoice.customer}`,
-        });
+        await invoicesAPI.update(id, invoice);
         toast.success("La facture a bien été modifiée !");
         history.replace("/invoices");
       } else {
-        await Axios.post("https://localhost:8000/api/invoices", {
-          ...invoice,
-          customer: `/api/customers/${invoice.customer}`,
-        });
+        await invoicesAPI.create(invoice);
         toast.success("La facture a bien été créée !");
         history.replace("/invoices");
       }

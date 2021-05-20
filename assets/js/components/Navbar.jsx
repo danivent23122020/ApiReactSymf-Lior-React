@@ -1,4 +1,3 @@
-
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import AuthAPI from "../services/authAPI";
@@ -12,7 +11,7 @@ const Navbar = ({ history }) => {
   const handleLogout = () => {
     AuthAPI.logout();
     setIsAuthenticated(false);
-    toast.info("Vous êtes désormais déconnecté !")
+    toast.info("Vous êtes désormais déconnecté !");
     history.push("/login");
   };
 
@@ -20,7 +19,7 @@ const Navbar = ({ history }) => {
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container-fluid">
         <NavLink className="navbar-brand" to="/">
-          SymReact
+          InvoicesManager
         </NavLink>
         <button
           className="navbar-toggler"

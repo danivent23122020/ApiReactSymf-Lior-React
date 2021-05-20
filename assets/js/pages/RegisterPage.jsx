@@ -65,9 +65,9 @@ const RegisterPage = ({ history }) => {
   //
   return (
     <>
-      <div className="col-5">
+      <div className="d-flex flex-column align-items-center mt-5">
         <h1>Inscription</h1>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="col-5 mt-2">
           <Field
             name="firstName"
             label="Prénom"
@@ -76,42 +76,49 @@ const RegisterPage = ({ history }) => {
             value={user.firstName}
             onChange={handleChange}
           />
-          <Field
-            name="lastName"
-            label="Nom"
-            placeholder="Votre nom"
-            error={errors.lastName}
-            value={user.lastName}
-            onChange={handleChange}
-          />
-          <Field
-            name="email"
-            label="Email"
-            placeholder="Votre email"
-            type="email"
-            error={errors.email}
-            value={user.email}
-            onChange={handleChange}
-          />
-          <Field
-            name="password"
-            label="Mot de passe"
-            placeholder="Votre mot de passe"
-            type="password"
-            error={errors.password}
-            value={user.password}
-            onChange={handleChange}
-          />
-          <Field
-            name="passwordConfirm"
-            label="Confirmez mot de passe"
-            placeholder="Confirmation du mot de passe"
-            type="password"
-            error={errors.passwordConfirm}
-            value={user.passwordConfirm}
-            onChange={handleChange}
-          />
-          <div className="form-group d-flex justify-content-around mt-2">
+          <div className="mt-2">
+            <Field
+              name="lastName"
+              label="Nom"
+              placeholder="Votre nom"
+              error={errors.lastName}
+              value={user.lastName}
+              onChange={handleChange}
+            />
+            <div className="mt-2"></div>
+            <Field
+              name="email"
+              label="Email"
+              placeholder="Votre email"
+              type="email"
+              error={errors.email}
+              value={user.email}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mt-2">
+            <Field
+              name="password"
+              label="Mot de passe"
+              placeholder="Votre mot de passe"
+              type="password"
+              error={errors.password}
+              value={user.password}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mt-2">
+            <Field
+              name="passwordConfirm"
+              label="Confirmez mot de passe"
+              placeholder="Confirmation du mot de passe"
+              type="password"
+              error={errors.passwordConfirm}
+              value={user.passwordConfirm}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group d-flex justify-content-around mt-3">
             <button type="submit" className="btn btn-success">
               Inscription
             </button>

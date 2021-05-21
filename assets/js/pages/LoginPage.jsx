@@ -43,7 +43,7 @@ const LoginPage = ({ history }) => {
   return (
     <>
       <div className="d-flex flex-column align-items-center mt-5">
-        <h1>Connexion à l'application</h1>
+        <h1>Connexion</h1>
 
         <form onSubmit={handleSubmit} className="col-5">
           {/* input adresse email */}

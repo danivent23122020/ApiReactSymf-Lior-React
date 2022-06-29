@@ -2,10 +2,11 @@
 
 namespace App\Repository;
 
-use App\Entity\Invoice;
 use App\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\Invoice;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Invoice|null find($id, $lockMode = null, $lockVersion = null)
@@ -20,18 +21,21 @@ class InvoiceRepository extends ServiceEntityRepository
         parent::__construct($registry, Invoice::class);
     }
 
-    public function findNextChrono(User $user)
+    public function findNextChrono(User $user): int
     {
-        return $this->createQueryBuilder("i")
-                    ->select("i.chrono")
-                    ->join("i.customer", "c")
-                    ->where("c.user = :user")
-                    ->setParameter("user", $user)
-                    ->orderBy("i.chrono", "DESC")
+    $query = $this->createQueryBuilder('i')
+                    ->select('i.chrono')
+                    ->join('i.customer', 'c')
+                    ->where('c.user = :user')
+                    ->setParameter('user', $user)
+                    ->orderBy('i.chrono', 'DESC')
                     ->setMaxResults(1)
                     ->getQuery()
-                    ->getSingleScalarResult() + 1;
-    }
+                    ->getOneOrNullResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
+    
+        return $query? $query + 1 : 1;
+    }  
+
 
     // /**
     //  * @return Invoice[] Returns an array of Invoice objects

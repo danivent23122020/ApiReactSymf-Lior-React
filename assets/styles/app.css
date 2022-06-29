@@ -6,3 +6,7 @@ body {
 .homepage {
     background: url(../img/background.jpg) ;
 }
+
+h1{
+  text-align: center;
+}
